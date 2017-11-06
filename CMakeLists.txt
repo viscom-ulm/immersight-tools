@@ -17,6 +17,7 @@ src/opencv.cpp
 src/util.cpp
 )
 
+add_subdirectory("extern/glm")
 include_directories("extern/glm")
 
 
@@ -25,7 +26,5 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ../lib)
 
 add_library(ImmersightTools ${HEADER_FILES} ${SRC_FILES})
 
-#add_executable(ImmersightToolsTests tests/main.cpp)
 
-target_link_libraries( ImmersightTools ${OpenCV_LIBS} ${OPENGL_LIBRARY}) #glfw3 libglew32 glew32)
-#target_link_libraries( ImmersightToolsTests ${OpenCV_LIBS} ${OPENGL_LIBRARY} glfw3 libglew32 glew32 ImmersightTools)
+target_link_libraries( ImmersightTools ${OpenCV_LIBS} ${OPENGL_LIBRARY} extern/glm)
