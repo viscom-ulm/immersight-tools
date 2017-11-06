@@ -1,14 +1,16 @@
 # ImmersightTools
 
-Collection of utility methods for conversion of OpenCV matrices to OpenGL matrices and vice versa.
+Collection of utility methods, for example to convert from OpenCV to OpenGL matrix and vice versa.
 
 ## Getting Started
 
-These instructions will get you a copy of the project up and running on your local machine. This library is used for the panorama generator.
+This library is used for the panorama generator.
 
 ### Prerequisites
 
-Install OpenCV (tested with: 3.2)
+Tested with:
+Visual Studio 2015 and 2017
+Install OpenCV (3.2)
 
 ### Installing
 
@@ -25,7 +27,7 @@ Then open Visual Studio and build the solution.
 
 ## Authors
 
-* **Sebastian Hartwig** - *Initial work* - [PurpleBooth](https://github.com/PurpleBooth)
+* **Sebastian Hartwig** - [Panorama Generator](https://gitlab-mi.informatik.uni-ulm.de/ifr97/panorama-generator.git)
 
 ## Acknowledgments
 
