@@ -1,6 +1,9 @@
 # ImmersightTools
 
-Collection of utility methods, for example to convert from OpenCV to OpenGL matrix and vice versa.
+Collection of utility methods.
+* convert from OpenCV to OpenGL matrix and vice versa.
+* I/O for intrinsic and extrinsic parameters
+* chessboard calibration
 
 ## Getting Started
 
