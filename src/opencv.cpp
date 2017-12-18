@@ -169,4 +169,80 @@ namespace immersight {
 
 		drawCorrespondence(image_url, inputImage, keypointsImage, patternImage, patternKeypoints, matchesImgtoPat, innerMask1, innerMask2, 3);
 	}
+
+    std::vector<cv::DMatch> computeMatchingFeatures(const ProcessedImage &pImage, const ProcessedImage &pRef, cv::Ptr<cv::FeatureDetector> detector, cv::Ptr<cv::DescriptorExtractor> descriptor, cv::Ptr<cv::DescriptorMatcher> matcher)
+    {
+        CV_Assert(!pRef.image.empty());
+
+        std::vector<cv::Mat> r(2);
+        
+
+        // match with pattern
+        std::vector<cv::DMatch> matchesImgtoPat, matchesImgtoPat1, matchesImgtoPat2;
+        std::vector<cv::KeyPoint> keypointsImage1, keypointsImage2, keypointsImage;
+        cv::Mat keypointsImageLocation, keypointsPatternLocation;
+
+        crossCheckMatching(matcher, pImage.descriptor, pRef.descriptor, matchesImgtoPat1, 1);
+        crossCheckMatching(matcher, pImage.descriptorEH, pRef.descriptorEH, matchesImgtoPat2, 1);
+        if (static_cast<int>(matchesImgtoPat1.size()) > static_cast<int>(matchesImgtoPat2.size()))
+        {
+            matchesImgtoPat = matchesImgtoPat1;
+            keypointsImage = keypointsImage1;
+        }
+        else
+        {
+            matchesImgtoPat = matchesImgtoPat2;
+            keypointsImage = keypointsImage2;
+        }
+
+        keyPoints2MatchedLocation(keypointsImage, pRef.keypoints, matchesImgtoPat,
+            keypointsImageLocation, keypointsPatternLocation);
+
+        cv::Mat img_corr;
+
+        // innerMask is CV_8U type
+        cv::Mat innerMask1, innerMask2;
+
+        // outlier remove
+        findFundamentalMat(keypointsImageLocation, keypointsPatternLocation,
+            cv::FM_RANSAC, 1, 0.995, innerMask1);
+        getFilteredLocation(keypointsImageLocation, keypointsPatternLocation, innerMask1);
+
+        findHomography(keypointsImageLocation, keypointsPatternLocation, cv::RANSAC, 30 * pImage.image.cols / 1000, innerMask2);
+        getFilteredLocation(keypointsImageLocation, keypointsPatternLocation, innerMask2);
+
+        std::vector<cv::DMatch> matchesFilter;
+        int j = 0;
+        for (int i = 0; i < (int)innerMask1.total(); ++i)
+        {
+            if (innerMask1.at<uchar>(i) == 1)
+            {
+                if (!innerMask2.empty() && innerMask2.at<uchar>(j) == 1)
+                {
+                    matchesFilter.push_back(matchesImgtoPat[i]);
+                }
+                j++;
+            }
+        }
+
+        return matchesFilter;
+    }
+
+    void processImage(const cv::Mat& image, ProcessedImage& pImage, const cv::Ptr<cv::FeatureDetector> detector, const cv::Ptr<cv::DescriptorExtractor> descriptor)
+    {
+        CV_Assert(!image.empty());
+        image.copyTo(pImage.image);
+        if (pImage.image.type() != CV_8U)
+        {
+            pImage.image.convertTo(pImage.image, CV_8U);
+        }
+        cv::Mat imageEquHist;
+        equalizeHist(pImage.image, imageEquHist);
+        detector->detect(pImage.image, pImage.keypoints);
+        descriptor->compute(pImage.image, pImage.keypoints, pImage.descriptor);
+        detector->detect(imageEquHist, pImage.keypointsEH);
+        descriptor->compute(imageEquHist, pImage.keypointsEH, pImage.descriptorEH);
+        pImage.descriptor.convertTo(pImage.descriptor, CV_32F);
+        pImage.descriptorEH.convertTo(pImage.descriptorEH, CV_32F);
+    }
 } // immersight

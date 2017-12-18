@@ -69,6 +69,7 @@ namespace immersight {
     // opencv
     cv::Ptr<cv::xfeatures2d::SURF> getSURF();
     cv::Ptr<cv::DescriptorMatcher> getFLANN();
+    cv::Mat computeDescriptors(const cv::Mat& image, std::vector<cv::KeyPoint>& keyPoints, const cv::Ptr<cv::DescriptorExtractor> de = getSURF());
     cv::randpattern::RandomPatternCornerFinder getRandomPatternFinder(float patternWidth = 109.f, float patternHeight = 82.f, int minMatches = 20, bool verbose = 0, bool showExtraction = 0);
     int getTimestampIndex(int timestamp, VecInt& timestamps);
     void parseCamAndTimestamp(const int nCamera, const VecStr& file_list, VecStr2D& filesEachCameraFull, VecInt2D& timestampFull);

@@ -44,7 +44,15 @@ namespace immersight {
 	cv::Ptr<cv::DescriptorMatcher> getFLANN() {
 		return cv::DescriptorMatcher::create(cv::DescriptorMatcher::FLANNBASED);
 	}
-	/*
+
+    cv::Mat computeDescriptors(const cv::Mat& image, std::vector<cv::KeyPoint>& keyPoints, const cv::Ptr<cv::DescriptorExtractor> de)
+    {
+        cv::Mat descriptor;
+        de->compute(image, keyPoints,descriptor);
+        return descriptor;
+    }
+
+    /*
 	returns a pre-configured PatternFinder
 	*/
 	cv::randpattern::RandomPatternCornerFinder getRandomPatternFinder(float patternWidth, float patternHeight, int minMatches, bool verbose, bool showExtraction) {
