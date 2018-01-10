@@ -65,9 +65,13 @@ namespace immersight {
         const T* data = &view_gl.at<T>(0, 0); // access the data
         return std::move(glm::make_mat4(data));
     }
+    void parseFileNameAndExt(const std::string& path, std::string& filename, std::string& ext);
+    bool parseNumberOfDigits(const std::string& str, int& number);
+    void parseFileNameWithoutNumber(const std::string& path, std::string& pathwithoutfilename, std::string& stem, int& numberOfDigits, std::string& ext);
 
     // opencv
-    cv::Ptr<cv::xfeatures2d::SURF> getSURF();
+    cv::Ptr<cv::ORB> getORB(int nfeatures = 500, float scaleFactor = 1.2f, int nlevels = 8, int edgeThreshold = 31, int firstLevel = 0, int wta_k = 2, int scoreType = cv::ORB::HARRIS_SCORE, int patchSize = 31, int fastThreshold = 20);
+    cv::Ptr<cv::xfeatures2d::SURF> getSURF(int metrixThreshold = 200, int numberOfOctaves = 8, int numScaleLevels = 4);
     cv::Ptr<cv::DescriptorMatcher> getFLANN();
     cv::Mat computeDescriptors(const cv::Mat& image, std::vector<cv::KeyPoint>& keyPoints, const cv::Ptr<cv::DescriptorExtractor> de = getSURF());
     cv::randpattern::RandomPatternCornerFinder getRandomPatternFinder(float patternWidth = 109.f, float patternHeight = 82.f, int minMatches = 20, bool verbose = 0, bool showExtraction = 0);

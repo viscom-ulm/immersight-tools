@@ -32,11 +32,13 @@ namespace immersight {
 	/*
 	returns a pre-configured SURF descriptor
 	*/
-	cv::Ptr<cv::xfeatures2d::SURF> getSURF() {
-		int metrixThreshold = 200; //minHessian
-		int numberOfOctaves = 8;
-		int numScaleLevels = 4; // nOctavesLayer
+	cv::Ptr<cv::xfeatures2d::SURF> getSURF(int metrixThreshold, int numberOfOctaves, int numScaleLevels )
+    {
 		return cv::xfeatures2d::SURF::create(metrixThreshold, numberOfOctaves, numScaleLevels);
+	}
+    cv::Ptr<cv::ORB> getORB(int nfeatures, float scaleFactor, int nlevels, int edgeThreshold, int firstLevel, int wta_k, int scoreType, int patchSize, int fastThreshold)
+	{
+        return cv::ORB::create(nfeatures, scaleFactor, nlevels, edgeThreshold, firstLevel, wta_k, scoreType, patchSize, fastThreshold);
 	}
 	/*
 	returns a Flann based descriptor matcher
@@ -429,5 +431,53 @@ namespace immersight {
 		std::string result(s);
 		result.insert(s.size() - index, postfix);
 		return result;
+	}
+
+    void parseFileNameAndExt(const std::string& path, std::string& filename, std::string& ext)
+	{
+        auto index = 0;
+        auto length = 0;
+	    for(auto i = path.size()-1; i >0; --i)
+	    {
+            if (path.at(i) == '/' || path.at(i) == '\\') { break; }
+            index = i;
+            length = path.size() - i;
+	    }
+        filename = path.substr(index, length);
+        ext = filename.substr(filename.size() - 3, 3);
+        filename = filename.substr(0, filename.size() - 4);
+	}
+
+    bool parseNumberOfDigits(const std::string& str, int& nod)
+	{
+        auto numberAsString = std::string();
+	    auto numberStarted = false;
+        for(const auto c : str)
+        {
+            if(std::isdigit(c))
+            {
+                numberStarted = true;
+                numberAsString.push_back(c);
+            } else
+            {
+                if (numberStarted) return false;
+            }
+        }
+        nod = numberAsString.size();
+        return nod >= 0;
+	}
+
+    void parseFileNameWithoutNumber(const std::string& path, std::string& pathwithoutfilename, std::string& stem, int& numberOfDigits, std::string& ext)
+	{
+        auto filename = std::string();
+        parseFileNameAndExt(path, filename, ext);
+        pathwithoutfilename = path.substr(0, path.size() - (filename.size() + 4));
+        if(parseNumberOfDigits(filename, numberOfDigits))
+        {
+            for(auto c:filename)
+            {
+                if (!isdigit(c)) stem.push_back(c);
+            }
+        }
 	}
 } // namespace immerishgt
