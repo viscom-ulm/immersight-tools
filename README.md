@@ -20,7 +20,7 @@ Install OpenCV (3.2)
 Clone, Build, Compile.
 
 ```
-git clone https://gitlab-mi.informatik.uni-ulm.de/ifr97/immersight-tools.git
+git clone https://github.com/viscom-ulm/immersight-tools.git
 cd immersight-tools
 mkdir build && cd build
 cmake .. -G "Visual Studio 15 2017 Win64"
@@ -30,7 +30,7 @@ Then open Visual Studio and build the solution.
 
 ## Authors
 
-* **Sebastian Hartwig** - [Panorama Generator](https://gitlab-mi.informatik.uni-ulm.de/ifr97/panorama-generator.git)
+* **Sebastian Hartwig** - [Panorama Generator](https://github.com/viscom-ulm/panorama-generator.git)
 
 ## Acknowledgments
 
